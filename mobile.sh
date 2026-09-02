@@ -3,6 +3,7 @@
 #   $SWAPPER_MODE      "mobile"
 #   $SWAPPER_DISPLAYS  e.g. "Built-in Retina Display 3024x1964 (built-in)"
 set -eu
+PATH="$HOME/.local/bin:$PATH"   # where `make install` puts swapper
 
 # Dock: auto-hide. Applied live; no Dock restart, no screen flash.
 swapper dock-autohide on
