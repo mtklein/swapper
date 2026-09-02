@@ -1,25 +1,33 @@
-import CoreGraphics
-import Foundation
+import AppKit
 
-/// Listens for display reconfiguration and runs the mode script whenever the mode flips.
+/// Runs the mode script whenever the mode flips. AppKit's screen-parameters
+/// notification prompts an immediate check, and a periodic poll backs it up.
 @MainActor
 final class Watcher {
     private var last: Mode?
     private var pending: DispatchWorkItem?
 
-    /// Coalesce the burst of callbacks a single dock/undock produces.
+    /// Coalesce the burst of notifications a single dock/undock produces.
     private let settle: TimeInterval = 2
+    private let pollInterval: TimeInterval = 3
 
     func run() {
         Log.line("swapper watching displays; scripts in \(Scripts.directory.path)")
-        let context = Unmanaged.passUnretained(self).toOpaque()
-        CGDisplayRegisterReconfigurationCallback({ _, _, userInfo in
-            guard let userInfo else { return }
-            let watcher = Unmanaged<Watcher>.fromOpaque(userInfo).takeUnretainedValue()
-            MainActor.assumeIsolated { watcher.scheduleCheck() }
-        }, context)
+
+        // A faceless app: AppKit delivers display changes to processes with an NSApplication event loop.
+        let app = NSApplication.shared
+        app.setActivationPolicy(.prohibited)
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.didChangeScreenParametersNotification, object: nil, queue: .main
+        ) { [self] _ in
+            MainActor.assumeIsolated { scheduleCheck() }
+        }
+        Timer.scheduledTimer(withTimeInterval: pollInterval, repeats: true) { [self] _ in
+            MainActor.assumeIsolated { check() }
+        }
+
         check()
-        RunLoop.main.run()
+        app.run()
     }
 
     private func scheduleCheck() {
