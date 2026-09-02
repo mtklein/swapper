@@ -1,7 +1,7 @@
 import AppKit
 
-/// Runs the mode script whenever the mode flips. AppKit's screen-parameters
-/// notification prompts an immediate check, and a periodic poll backs it up.
+/// Runs the mode script whenever the mode flips, prompted by AppKit's
+/// screen-parameters notification.
 @MainActor
 final class Watcher {
     private var last: Mode?
@@ -9,7 +9,6 @@ final class Watcher {
 
     /// Coalesce the burst of notifications a single dock/undock produces.
     private let settle: TimeInterval = 2
-    private let pollInterval: TimeInterval = 3
 
     func run() {
         Log.line("swapper watching displays; scripts in \(Scripts.directory.path)")
@@ -21,9 +20,6 @@ final class Watcher {
             forName: NSApplication.didChangeScreenParametersNotification, object: nil, queue: .main
         ) { [self] _ in
             MainActor.assumeIsolated { scheduleCheck() }
-        }
-        Timer.scheduledTimer(withTimeInterval: pollInterval, repeats: true) { [self] _ in
-            MainActor.assumeIsolated { check() }
         }
 
         check()

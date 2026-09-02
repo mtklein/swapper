@@ -18,8 +18,7 @@ an external display attached counts as docked.
 `swapper watch` runs as a faceless AppKit app so it receives the system's
 screen-parameters notification, waits two seconds for the burst of events a dock
 or undock produces to settle, and runs the matching script when the mode changes.
-A three-second poll of the display list backs the notification up. It also runs
-once at startup so login syncs state. A per-user launchd agent keeps it alive.
+It also runs once at startup so login syncs state. A per-user launchd agent keeps it alive.
 
 Built on system frameworks only.
 
