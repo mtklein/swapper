@@ -4,7 +4,7 @@ Runs one shell script when this Mac gains an external display and another when
 it goes back to the built-in panel alone. Use it to flip anything that should
 differ between docked and mobile: Dock hiding, game resolutions, and so on.
 
-There is no configuration format. The scripts are the configuration:
+The scripts are the configuration:
 
     ~/.config/swapper/docked.sh   # any external display is online
     ~/.config/swapper/mobile.sh   # only the built-in display is online
@@ -20,9 +20,7 @@ waits two seconds for the burst of events a dock or undock produces to settle,
 and runs the matching script only when the mode actually changes. It also runs
 once at startup so login syncs state. A per-user launchd agent keeps it alive.
 
-No third-party dependencies. launchd on its own cannot trigger on display
-changes: the common `WatchPaths` trick on the windowserver displays plist is
-unreliable because that file is only rewritten when a new layout is stored.
+Built on system frameworks only.
 
 ## Install
 
@@ -35,7 +33,7 @@ Output from the scripts goes to `~/Library/Logs/swapper.log`.
     swapper status          # detected mode, displays, script and agent state
     swapper run [mode]      # run a script by hand (defaults to the detected mode)
     swapper dock-autohide [on|off]   # show or set Dock auto-hide live
-    swapper init            # write example scripts, never overwriting
+    swapper init            # write example scripts, keeping existing ones
     swapper uninstall       # stop and remove the launchd agent
     make uninstall          # the above plus remove the binary
 
@@ -48,8 +46,8 @@ is there at the moment the mode changes. Restarting the agent is only needed aft
 
 - Dock: shown when docked, auto-hidden when mobile, via `swapper dock-autohide`.
   That calls the same HIServices `CoreDock` functions System Events uses, so the
-  live Dock updates in place with no restart and no screen flash. If a future
-  macOS drops those symbols it falls back to `defaults write` plus a Dock restart.
+  live Dock updates in place. If a future macOS drops those symbols it falls back
+  to `defaults write` plus a Dock restart.
 - MTG Arena: a 3840x2160 window when docked, native fullscreen when mobile.
   Written to the Unity `Screenmanager` keys in `com.wizards.mtga`, which the
   game reads at launch, so a running game picks the change up next start.

@@ -5,10 +5,10 @@ let usage = """
 
       status               show detected mode, displays, scripts, and agent state
       dock-autohide [on|off]
-                           show or set Dock auto-hide live, without restarting the Dock
+                           show or set Dock auto-hide live
       run [docked|mobile]  run the script for a mode (default: the detected mode)
       watch                stay running and run the script whenever the mode changes
-      init                 write example scripts to ~/.config/swapper/ (never overwrites)
+      init                 write example scripts to ~/.config/swapper/, keeping existing ones
       install              install and start a launchd agent that runs `swapper watch`
       uninstall            stop and remove the launchd agent
 

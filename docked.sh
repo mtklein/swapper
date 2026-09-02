@@ -5,7 +5,7 @@
 set -eu
 PATH="$HOME/.local/bin:$PATH"   # where `make install` puts swapper
 
-# Dock: always visible. Applied live; no Dock restart, no screen flash.
+# Dock: always visible.
 swapper dock-autohide off
 
 # MTG Arena: 3840x2160 window. Read by the game at launch, so it takes effect

@@ -1,8 +1,8 @@
 import Foundation
 
 /// Dock auto-hide, changed live through the same private HIServices calls that
-/// System Events' `dock preferences` uses. The Dock applies the change immediately
-/// and persists it to com.apple.dock itself, so no restart (and no screen flash).
+/// System Events' `dock preferences` uses. The Dock applies the change in place
+/// and persists it to com.apple.dock itself.
 enum Dock {
     private typealias GetAutoHide = @convention(c) () -> Bool
     private typealias SetAutoHide = @convention(c) (Bool) -> Void
@@ -28,7 +28,7 @@ enum Dock {
         if let functions {
             functions.set(enabled)
         } else {
-            // Private API gone; fall back to the classic restart.
+            // Write the preference and restart the Dock to apply it.
             try Shell.run("/usr/bin/defaults", "write", "com.apple.dock", "autohide", "-bool", String(enabled))
             try Shell.run("/usr/bin/killall", "Dock")
         }

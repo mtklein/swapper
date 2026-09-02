@@ -69,7 +69,7 @@ enum Scripts {
     set -eu
     PATH="$HOME/.local/bin:$PATH"   # where `make install` puts swapper
 
-    # Dock: always visible. Applied live; no Dock restart, no screen flash.
+    # Dock: always visible.
     swapper dock-autohide off
 
     # MTG Arena: 3840x2160 window. Read by the game at launch, so it takes effect
@@ -89,7 +89,7 @@ enum Scripts {
     set -eu
     PATH="$HOME/.local/bin:$PATH"   # where `make install` puts swapper
 
-    # Dock: auto-hide. Applied live; no Dock restart, no screen flash.
+    # Dock: auto-hide.
     swapper dock-autohide on
 
     # MTG Arena: fullscreen at the panel's native resolution. Takes effect next launch.
