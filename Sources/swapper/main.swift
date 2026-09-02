@@ -4,6 +4,8 @@ let usage = """
     usage: swapper <command>
 
       status               show detected mode, displays, scripts, and agent state
+      dock-autohide [on|off]
+                           show or set Dock auto-hide live, without restarting the Dock
       run [docked|mobile]  run the script for a mode (default: the detected mode)
       watch                stay running and run the script whenever the mode changes
       init                 write example scripts to ~/.config/swapper/ (never overwrites)
@@ -47,6 +49,18 @@ case "status":
     }
     print("agent:    \(LaunchAgent.isLoaded ? "running" : "not installed")  \(LaunchAgent.plistURL.path)")
     print("log:      \(LaunchAgent.logURL.path)")
+
+case "dock-autohide":
+    switch arguments.dropFirst().first {
+    case nil:
+        print(Dock.autohide() ? "on" : "off")
+    case "on", "true", "1", "yes":
+        do { try Dock.setAutohide(true) } catch { fail("\(error)") }
+    case "off", "false", "0", "no":
+        do { try Dock.setAutohide(false) } catch { fail("\(error)") }
+    case let value?:
+        fail("expected on or off, got '\(value)'")
+    }
 
 case "run":
     let displays = Display.online()

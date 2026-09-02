@@ -1,13 +1,10 @@
 PREFIX ?= $(HOME)/.local
 BIN = $(PREFIX)/bin/swapper
 
-.PHONY: build test install uninstall
+.PHONY: build install link uninstall
 
 build:
 	swift build -c release
-
-test:
-	swift test
 
 # Build, copy the binary, create example scripts if absent, and start the launchd agent.
 install: build
@@ -15,6 +12,11 @@ install: build
 	install .build/release/swapper $(BIN)
 	$(BIN) init
 	$(BIN) install
+
+# Symlink the scripts tracked in this repo into ~/.config/swapper.
+link:
+	install -d $(HOME)/.config/swapper
+	ln -sf $(CURDIR)/docked.sh $(CURDIR)/mobile.sh $(HOME)/.config/swapper/
 
 uninstall:
 	-$(BIN) uninstall

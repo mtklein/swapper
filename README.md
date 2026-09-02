@@ -34,18 +34,22 @@ Output from the scripts goes to `~/Library/Logs/swapper.log`.
 
     swapper status          # detected mode, displays, script and agent state
     swapper run [mode]      # run a script by hand (defaults to the detected mode)
+    swapper dock-autohide [on|off]   # show or set Dock auto-hide live
     swapper init            # write example scripts, never overwriting
     swapper uninstall       # stop and remove the launchd agent
     make uninstall          # the above plus remove the binary
 
-Edit the scripts freely; the agent runs whatever is there at the moment the
-mode changes. Restarting the agent is only needed after rebuilding the binary
+My own `docked.sh` and `mobile.sh` are tracked in this repo; `make link` symlinks
+them into `~/.config/swapper`. Edit the scripts freely; the agent runs whatever
+is there at the moment the mode changes. Restarting the agent is only needed after rebuilding the binary
 (`make install` handles that).
 
 ## The example scripts
 
-- Dock: shown when docked, auto-hidden when mobile. The Dock is restarted only
-  when the setting actually changes.
+- Dock: shown when docked, auto-hidden when mobile, via `swapper dock-autohide`.
+  That calls the same HIServices `CoreDock` functions System Events uses, so the
+  live Dock updates in place with no restart and no screen flash. If a future
+  macOS drops those symbols it falls back to `defaults write` plus a Dock restart.
 - MTG Arena: a 3840x2160 window when docked, native fullscreen when mobile.
   Written to the Unity `Screenmanager` keys in `com.wizards.mtga`, which the
   game reads at launch, so a running game picks the change up next start.

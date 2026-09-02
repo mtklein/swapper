@@ -32,6 +32,11 @@ enum Scripts {
         var env = ProcessInfo.processInfo.environment
         env["SWAPPER_MODE"] = mode.rawValue
         env["SWAPPER_DISPLAYS"] = displays.map(\.description).joined(separator: "; ")
+        // Make sure `swapper` itself is reachable from the scripts, wherever it was launched from.
+        if let executable = Bundle.main.executableURL?.resolvingSymlinksInPath() {
+            let bin = executable.deletingLastPathComponent().path
+            env["PATH"] = [bin, env["PATH"] ?? "/usr/bin:/bin:/usr/sbin:/sbin"].joined(separator: ":")
+        }
         process.environment = env
 
         Log.line("running \(script.path)")
@@ -60,14 +65,11 @@ enum Scripts {
     #!/bin/sh
     # swapper runs this when an external display is connected.
     #   $SWAPPER_MODE      "docked"
-    #   $SWAPPER_DISPLAYS  e.g. "Color LCD 3024x1964 (built-in); Studio Display 5120x2880"
+    #   $SWAPPER_DISPLAYS  e.g. "Built-in Retina Display 3024x1964 (built-in); Studio Display 5120x2880"
     set -eu
 
-    # Dock: always visible. Only restart the Dock if the setting actually changes.
-    if [ "$(defaults read com.apple.dock autohide 2>/dev/null || echo 0)" != 0 ]; then
-        defaults write com.apple.dock autohide -bool false
-        killall Dock
-    fi
+    # Dock: always visible. Applied live; no Dock restart, no screen flash.
+    swapper dock-autohide off
 
     # MTG Arena: 3840x2160 window. Read by the game at launch, so it takes effect
     # next time MTGA starts. (Unity "Fullscreen mode": 1 = fullscreen window, 3 = windowed.)
@@ -82,14 +84,11 @@ enum Scripts {
     #!/bin/sh
     # swapper runs this when only the built-in display is present.
     #   $SWAPPER_MODE      "mobile"
-    #   $SWAPPER_DISPLAYS  e.g. "Color LCD 3024x1964 (built-in)"
+    #   $SWAPPER_DISPLAYS  e.g. "Built-in Retina Display 3024x1964 (built-in)"
     set -eu
 
-    # Dock: auto-hide. Only restart the Dock if the setting actually changes.
-    if [ "$(defaults read com.apple.dock autohide 2>/dev/null || echo 0)" != 1 ]; then
-        defaults write com.apple.dock autohide -bool true
-        killall Dock
-    fi
+    # Dock: auto-hide. Applied live; no Dock restart, no screen flash.
+    swapper dock-autohide on
 
     # MTG Arena: fullscreen at the panel's native resolution. Takes effect next launch.
     defaults write com.wizards.mtga "Screenmanager Fullscreen mode" -int 1
