@@ -79,6 +79,15 @@ enum Scripts {
     defaults write com.wizards.mtga "Screenmanager Resolution Width" -int 3840
     defaults write com.wizards.mtga "Screenmanager Resolution Height" -int 2160
 
+    # GeForce NOW: stream at 3840x2160 120 Hz. The client reads this file at launch
+    # and rewrites it at quit, so the change lands the next time GeForce NOW starts.
+    gfn="$HOME/Library/Application Support/NVIDIA/GeForceNOW/sharedstorage.json"
+    if [ -f "$gfn" ]; then
+        plutil -replace appSettingsConfig.customProfile.width  -integer 3840 "$gfn"
+        plutil -replace appSettingsConfig.customProfile.height -integer 2160 "$gfn"
+        plutil -replace appSettingsConfig.customProfile.fps    -integer 120  "$gfn"
+    fi
+
     """
 
     static let mobileExample = """
@@ -95,6 +104,15 @@ enum Scripts {
     # MTG Arena: fullscreen at the panel's native resolution. Takes effect next launch.
     defaults write com.wizards.mtga "Screenmanager Fullscreen mode" -int 1
     defaults write com.wizards.mtga "Screenmanager Resolution Use Native" -int 1
+
+    # GeForce NOW: stream at 2560x1600 120 Hz, a mode that fits inside the built-in
+    # panel. Takes effect next launch.
+    gfn="$HOME/Library/Application Support/NVIDIA/GeForceNOW/sharedstorage.json"
+    if [ -f "$gfn" ]; then
+        plutil -replace appSettingsConfig.customProfile.width  -integer 2560 "$gfn"
+        plutil -replace appSettingsConfig.customProfile.height -integer 1600 "$gfn"
+        plutil -replace appSettingsConfig.customProfile.fps    -integer 120  "$gfn"
+    fi
 
     """
 }

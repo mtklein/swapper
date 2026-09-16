@@ -51,3 +51,7 @@ is there at the moment the mode changes. Restarting the agent is only needed aft
 - MTG Arena: a 3840x2160 window when docked, native fullscreen when mobile.
   Written to the Unity `Screenmanager` keys in `com.wizards.mtga`, which the
   game reads at launch, so a running game picks the change up next start.
+- GeForce NOW: the streaming resolution and frame rate that suit the panel in
+  front of you. `plutil -replace` edits `customProfile` in the client's
+  `sharedstorage.json`; GeForce NOW reads that at launch and writes it back at
+  quit, so make the swap with the client closed and it sticks.
