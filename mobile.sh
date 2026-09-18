@@ -19,4 +19,10 @@ if [ -f "$gfn" ]; then
     plutil -replace appSettingsConfig.customProfile.width  -integer 2560 "$gfn"
     plutil -replace appSettingsConfig.customProfile.height -integer 1600 "$gfn"
     plutil -replace appSettingsConfig.customProfile.fps    -integer 120  "$gfn"
+    # Adaptive vsync (2) is what unlocks Cloud G-SYNC, which paces the panel to
+    # the frames as they land. 75 Mbps of the 100 the service allows, so a WiFi
+    # burst has room to pass without the encoder noticing and backing off.
+    plutil -replace appSettingsConfig.customProfile.vSync      -integer 2  "$gfn"
+    plutil -replace appSettingsConfig.customProfile.cloudGsync -bool true  "$gfn"
+    plutil -replace appSettingsConfig.customProfile.maxBitrate -integer 75 "$gfn"
 fi

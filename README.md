@@ -52,6 +52,8 @@ is there at the moment the mode changes. Restarting the agent is only needed aft
   Written to the Unity `Screenmanager` keys in `com.wizards.mtga`, which the
   game reads at launch, so a running game picks the change up next start.
 - GeForce NOW: the streaming resolution and frame rate that suit the panel in
-  front of you. `plutil -replace` edits `customProfile` in the client's
+  front of you, plus the adaptive-vsync, Cloud G-SYNC and bitrate settings that
+  stay the same either way, so the profile ends up declared rather than
+  remembered. `plutil -replace` edits `customProfile` in the client's
   `sharedstorage.json`; GeForce NOW reads that at launch and writes it back at
   quit, so make the swap with the client closed and it sticks.
