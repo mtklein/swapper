@@ -7,6 +7,14 @@ PATH="$HOME/.local/bin:$PATH"   # where `make install` puts swapper
 
 swapper dock-autohide off
 
+# Put the laptop on the side of the Studio Display facing the port it's plugged
+# into: receptacles 1 and 2 are on the laptop's left edge, 3 on its right.
+port=$(system_profiler SPThunderboltDataType | awk '/Receptacle:/ { r = $2 } /Studio Display/ { print r; exit }')
+case "$port" in
+    1|2) swapper builtin-side right ;;
+    3)   swapper builtin-side left ;;
+esac
+
 # (Unity "Fullscreen mode": 1 = fullscreen window, 3 = windowed.)
 defaults write com.wizards.mtga "Screenmanager Fullscreen mode" -int 3
 defaults write com.wizards.mtga "Screenmanager Resolution Use Native" -int 0

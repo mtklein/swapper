@@ -33,6 +33,7 @@ Output from the scripts goes to `~/Library/Logs/swapper.log`.
     swapper status          # detected mode, displays, script and agent state
     swapper run [mode]      # run a script by hand (defaults to the detected mode)
     swapper dock-autohide [on|off]   # show or set Dock auto-hide live
+    swapper builtin-side [left|right]  # show or set the laptop's side of the external display
     swapper init            # write example scripts, keeping existing ones
     swapper uninstall       # stop and remove the launchd agent
     make uninstall          # the above plus remove the binary

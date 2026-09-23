@@ -6,6 +6,8 @@ let usage = """
       status               show detected mode, displays, scripts, and agent state
       dock-autohide [on|off]
                            show or set Dock auto-hide live
+      builtin-side [left|right]
+                           show or set which side of the external display the built-in panel is on
       run [docked|mobile]  run the script for a mode (default: the detected mode)
       watch                stay running and run the script whenever the mode changes
       init                 write example scripts to ~/.config/swapper/, keeping existing ones
@@ -60,6 +62,21 @@ case "dock-autohide":
         do { try Dock.setAutohide(false) } catch { fail("\(error)") }
     case let value?:
         fail("expected on or off, got '\(value)'")
+    }
+
+case "builtin-side":
+    do {
+        switch arguments.dropFirst().first {
+        case nil:
+            print(try Arrangement.side().rawValue)
+        case let value?:
+            guard let side = Arrangement.Side(rawValue: value) else {
+                fail("expected left or right, got '\(value)'")
+            }
+            try Arrangement.setSide(side)
+        }
+    } catch {
+        fail("\(error)")
     }
 
 case "run":
